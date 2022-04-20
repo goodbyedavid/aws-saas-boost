@@ -118,18 +118,17 @@ Parameters:
       - AFTER_90_DAYS
     Default: NEVER
   
-  # Elasticsearch config
+  # Opensearch config
   UseES:
-    Description: Deploy the Elasticsearch nested stack?
+    Description: Deploy the OpenSearch nested stack?
     Type: String
     AllowedValues: ['true', 'false']
-    Default: 'false'
+    Default: 'true'
   ElasticsearchVersion:
     Default: 'OpenSearch_1.2'
     Type: String
-    ConstraintDescription: Must be an allowed AWS ES version (Major.Minor)
-    AllowedValues: ["OpenSearch_1.2","OpenSearch_1.1","OpenSearch_1.0","7.10","7.9","7.8","7.7","7.4","7.1","6.8","6.7","6.5","6.4","6.3","6.2","6.0","5.6","5.5","5.3","5.1","2.3","1.5"] 
-    
+    ConstraintDescription: Must be an allowed AWS OpenSearch version (Major.Minor)
+    AllowedValues: ["OpenSearch_1.2","OpenSearch_1.1","OpenSearch_1.0"] 
   ElasticsearchMasterInstanceType:
     Description: Instance type for master nodes.
     Type: String
@@ -221,9 +220,9 @@ Parameters:
     Default: 2
     MinValue: 1
     MaxValue: 20
-    # CustomEndpoint:
-    # Description: Name for custom endpoint
-    # Type: string
+# CustomEndpoint:
+# Description: Name for custom endpoint
+# Type: string
   CustomEndpointEnabled:
     Type: String
     AllowedValues: ['true', 'false']
@@ -238,10 +237,10 @@ Parameters:
   ESPortHTTPS:
     Type: String
     Default: '443'
-  TLSSecurityPolicy:
-    Type: String
-    AllowedValues: ['true', 'false']
-    Default: 'false'
+  # TLSSecurityPolicy:
+  #   Type: String
+  #   AllowedValues: ['true', 'false']
+  #   Default: 'false'
 
   UseRDS:
     Description: Deploy the RDS nested stack?
@@ -1561,14 +1560,14 @@ Resources:
         VPC: !Ref VPC
         SubnetPublicA: !Ref SubnetPublicA
         SubnetPublicB: !Ref SubnetPublicB
-        PrivateSubnetA: !Ref SubnetPrivateA
-        PrivateSubnetB: !Ref SubnetPrivateB
+        SubnetPrivateA: !Ref SubnetPrivateA
+        SubnetPrivateB: !Ref SubnetPrivateB
         ElasticsearchVersion: !Ref ElasticsearchVersion
         ECSSecurityGroup: !Ref ECSSecurityGroup
         ElasticsearchDataInstanceType: !Ref ElasticsearchDataInstanceType
         NumberOfDataNodes: !Ref NumberOfDataNodes
         EnforceHTTPS: !Ref EnforceHTTPS
-        ESPort: !If [ESEnforceHTTPS_false, !Ref ESPortHTTPS, !Ref ESPortHTTP]
+        ESPort: !If [!Ref ShouldEnforceHTTPS, !Ref ESPortHTTPS, !Ref ESPortHTTP]
         ElasticsearchName: 
           Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-es-cluster']]
 
