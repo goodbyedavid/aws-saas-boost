@@ -574,6 +574,15 @@ Resources:
                   - ds:DeleteDirectory
                 Resource:
                   - !Sub arn:aws:ds:${AWS::Region}:${AWS::AccountId}:directory/*
+              # Elasticsearch onboarding policy
+              - Effect: Allow
+                Action:
+                  - es:AddTags 
+                  - es:CreateElasticsearchDomain  
+                  - es:DescribeElasticsearchDomain
+                  - es:CreateElasticsearchServiceRole
+                Resource: 
+                  - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*
   OnboardingServiceDeleteTenantExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -887,6 +896,18 @@ Resources:
                   - ec2:RevokeSecurityGroupEgress
                 Resource:
                   - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
+              - Effect: Allow
+                Action:
+                  - es:DeleteElasticsearchDomain   
+                  - es:DeleteElasticsearchServiceRole 
+                  - es:DescribeElasticsearchDomain
+                  # case specific - debug purpose
+                  # - es:ESHttpPut 
+                  ##############
+                  - es:RemoveTags 
+                Resource: 
+                  - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*
+
   OnboardingServiceGetAllLogs:
     Type: AWS::Logs::LogGroup
     Properties:
