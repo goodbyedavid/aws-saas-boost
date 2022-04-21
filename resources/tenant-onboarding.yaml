@@ -705,7 +705,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt DisableInstanceProtectionFunction.Arn     
       AutoScalingGroup: !Ref ECSAutoScalingGroup     
-  ## end changes          
+## end changes          
 
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
@@ -906,7 +906,7 @@ Resources:
               - !Ref 'AWS::NoValue'
               - InitProcessEnabled: true
           Secrets:
-            !If:
+            Fn::If:
               - ProvisionRDS
               - - Name: DB_MASTER_USERNAME
                   ValueFrom: !Sub arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/saas-boost/${Environment}/DB_MASTER_USERNAME
