@@ -117,6 +117,200 @@ Parameters:
       - AFTER_60_DAYS
       - AFTER_90_DAYS
     Default: NEVER
+  UseOpenSearch:
+    Description: Deploy the OpenSearch nested stack?
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'true' #default to true for testing purpose as of now
+  OpenSearchEngineVersion:
+    Default: 'OpenSearch_1.2'
+    Type: String
+    ConstraintDescription: Must be an allowed AWS OpenSearch version (Major.Minor)
+    AllowedValues: ["OpenSearch_1.2","OpenSearch_1.1","OpenSearch_1.0"]  # aws opensearch list-versions
+  OpenSearchDataInstanceType:
+    Description: Instance type for data nodes.
+    Type: String
+    Default: r5.large.search
+    AllowedValues:
+      - t3.small.search
+      - t3.medium.search
+      - c5.large.search
+      - c5.xlarge.search
+      - c5.2xlarge.search
+      - c5.4xlarge.search
+      - c5.9xlarge.search
+      - c5.18xlarge.search
+      - i3.large.search
+      - i3.xlarge.search
+      - i3.2xlarge.search
+      - i3.4xlarge.search
+      - i3.8xlarge.search
+      - i3.16xlarge.search
+      - m5.large.search
+      - m5.xlarge.search
+      - m5.2xlarge.search
+      - m5.4xlarge.search
+      - m5.12xlarge.search
+      - r5.large.search
+      - r5.xlarge.search
+      - r5.2xlarge.search
+      - r5.4xlarge.search
+      - r5.12xlarge.search
+      - t2.small.search
+      - t2.medium.search
+      - c4.large.search
+      - c4.xlarge.search
+      - c4.2xlarge.search
+      - c4.4xlarge.search
+      - c4.8xlarge.search
+      - i2.xlarge.search
+      - i2.2xlarge.search
+      - m4.large.search
+      - m4.xlarge.search
+      - m4.2xlarge.search
+      - m4.4xlarge.search
+      - m4.10xlarge.search
+      - r4.large.search
+      - r4.xlarge.search
+      - r4.2xlarge.search
+      - r4.4xlarge.search
+      - r4.8xlarge.search
+      - r4.16xlarge.search
+      - m3.medium.search
+      - m3.large.search
+      - m3.xlarge.search
+      - m3.2xlarge.search
+      - r3.large.search
+      - r3.xlarge.search
+      - r3.2xlarge.search
+      - r3.4xlarge.search
+      - r3.8xlarge.search
+      - m6g.large.search
+      - m6g.xlarge.search
+      - m6g.2xlarge.search
+      - m6g.4xlarge.search
+      - m6g.8xlarge.search
+      - m6g.12xlarge.search
+      - c6g.large.search
+      - c6g.xlarge.search
+      - c6g.2xlarge.search
+      - c6g.4xlarge.search
+      - c6g.8xlarge.search
+      - c6g.12xlarge.search
+      - r6g.large.search
+      - r6g.xlarge.search
+      - r6g.2xlarge.search
+      - r6g.4xlarge.search
+      - r6g.8xlarge.search
+      - r6g.12xlarge.search
+      - r6gd.large.search
+      - r6gd.xlarge.search
+      - r6gd.2xlarge.search
+      - r6gd.4xlarge.search
+      - r6gd.8xlarge.search
+      - r6gd.12xlarge.search
+      - r6gd.16xlarge.search
+      - ultrawarm1.medium.search
+      - ultrawarm1.large.search
+  OpenSearchMasterInstanceType:
+    Description: Instance type for master nodes.
+    Type: String
+    Default: t3.small.search
+    AllowedValues:
+      - t3.small.search
+      - t3.medium.search
+      - c5.large.search
+      - c5.xlarge.search
+      - c5.2xlarge.search
+      - c5.4xlarge.search
+      - c5.9xlarge.search
+      - c5.18xlarge.search
+      - i3.large.search
+      - i3.xlarge.search
+      - i3.2xlarge.search
+      - i3.4xlarge.search
+      - i3.8xlarge.search
+      - i3.16xlarge.search
+      - m5.large.search
+      - m5.xlarge.search
+      - m5.2xlarge.search
+      - m5.4xlarge.search
+      - m5.12xlarge.search
+      - r5.large.search
+      - r5.xlarge.search
+      - r5.2xlarge.search
+      - r5.4xlarge.search
+      - r5.12xlarge.search
+      - t2.small.search
+      - t2.medium.search
+      - c4.large.search
+      - c4.xlarge.search
+      - c4.2xlarge.search
+      - c4.4xlarge.search
+      - c4.8xlarge.search
+      - i2.xlarge.search
+      - i2.2xlarge.search
+      - m4.large.search
+      - m4.xlarge.search
+      - m4.2xlarge.search
+      - m4.4xlarge.search
+      - m4.10xlarge.search
+      - r4.large.search
+      - r4.xlarge.search
+      - r4.2xlarge.search
+      - r4.4xlarge.search
+      - r4.8xlarge.search
+      - r4.16xlarge.search
+      - m3.medium.search
+      - m3.large.search
+      - m3.xlarge.search
+      - m3.2xlarge.search
+      - r3.large.search
+      - r3.xlarge.search
+      - r3.2xlarge.search
+      - r3.4xlarge.search
+      - r3.8xlarge.search
+      - m6g.large.search
+      - m6g.xlarge.search
+      - m6g.2xlarge.search
+      - m6g.4xlarge.search
+      - m6g.8xlarge.search
+      - m6g.12xlarge.search
+      - c6g.large.search
+      - c6g.xlarge.search
+      - c6g.2xlarge.search
+      - c6g.4xlarge.search
+      - c6g.8xlarge.search
+      - c6g.12xlarge.search
+      - r6g.large.search
+      - r6g.xlarge.search
+      - r6g.2xlarge.search
+      - r6g.4xlarge.search
+      - r6g.8xlarge.search
+      - r6g.12xlarge.search
+      - r6gd.large.search
+      - r6gd.xlarge.search
+      - r6gd.2xlarge.search
+      - r6gd.4xlarge.search
+      - r6gd.8xlarge.search
+      - r6gd.12xlarge.search
+      - r6gd.16xlarge.search
+      - ultrawarm1.medium.search
+      - ultrawarm1.large.search
+  OpenSearchNumberOfDataNodes:
+    Description: How many data nodes you want to have. Multiples of your number of availability zones (2) is recommended.
+    Type: Number
+    Default: 2
+    MinValue: 1
+    MaxValue: 20
+  OpenSearchNumberOfMasterNodes:
+    Description: How many dedicated master nodes you want to have. 3 is recommended.
+    Type: Number
+    Default: 3
+    AllowedValues:
+      - 3
+      - 5
+     
   UseRDS:
     Description: Deploy the RDS nested stack?
     Type: String
@@ -214,6 +408,7 @@ Parameters:
 Conditions:
   HasDomainName: !Not [!Equals [!Ref DomainName, '']]
   ProvisionEFS: !Equals [!Ref UseEFS, 'true']
+  ProvisionOpenSearch: !Equals [!Ref UseOpenSearch, 'true']
   ProvisionRDS: !Equals [!Ref UseRDS, 'true']
   WindowsOS: !Not [!Equals [!Ref DockerHostOS, 'LINUX']]
   HasCertificate: !Not [!Equals [!Ref SSLCertArnParam, '']]
@@ -1368,6 +1563,45 @@ Resources:
         ECSSecurityGroup: !Ref ECSSecurityGroup
         EncryptEFS: !Ref EncryptEFS
         EFSLifecyclePolicy: !Ref EFSLifecyclePolicy
+  
+  opensearch:
+    Type: AWS::CloudFormation::Stack
+    Condition: ProvisionOpenSearch
+    DependsOn:
+      - SubnetPublicA
+      - SubnetPublicB
+      - SubnetPublicARouteTable
+      - SubnetPublicBRouteTable
+      - SubnetPrivateA
+      - SubnetPrivateB
+      - RoutePublic
+      - RouteTablePublic
+      - InternetGateway
+      - Subnet1RouteTableAssociation
+      - Subnet2RouteTableAssociation
+      - TenantRouteTablePrivate
+      - TenantTGWAttachment
+      - TenantRoute
+      - TenantVpcTgwAssociation
+      - UpdateRouteTable
+    Properties:
+      TemplateURL: !Sub https://${SaaSBoostBucket}.s3.amazonaws.com/tenant-onboarding-es.yaml
+      TimeoutInMinutes: 30
+      Parameters:
+        TenantId: !Ref TenantId
+        VPC: !Ref VPC
+        # SubnetPublicA: !Ref SubnetPublicA
+        # SubnetPublicB: !Ref SubnetPublicB
+        PrivateSubnetA: !Ref SubnetPrivateA
+        PrivateSubnetB: !Ref SubnetPrivateB
+        ECSSecurityGroup: !Ref ECSSecurityGroup
+        DomainName: 
+          Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-opensearch-cluster']]
+        EngineVersion: !Ref OpenSearchEngineVersion
+        DataInstanceType: !Ref OpenSearchDataInstanceType
+        MasterInstanceType: !Ref OpenSearchMasterInstanceType
+        NumberOfMasterNodes: !Ref OpenSearchNumberOfMasterNodes
+        NumberOfDataNodes: !Ref OpenSearchNumberOfDataNodes
   rds:
     Type: AWS::CloudFormation::Stack
     Condition: ProvisionRDS

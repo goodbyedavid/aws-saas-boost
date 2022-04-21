@@ -574,6 +574,12 @@ Resources:
                   - ds:DeleteDirectory
                 Resource:
                   - !Sub arn:aws:ds:${AWS::Region}:${AWS::AccountId}:directory/*
+              # OpenSearch onboarding policy
+              - Effect: Allow
+                Action:
+                  - es:*
+                Resource: 
+                  - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*
   OnboardingServiceDeleteTenantExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -887,6 +893,11 @@ Resources:
                   - ec2:RevokeSecurityGroupEgress
                 Resource:
                   - !Sub arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:security-group/*
+              - Effect: Allow
+                Action:
+                  - es:*
+                Resource: 
+                  - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*            
   OnboardingServiceGetAllLogs:
     Type: AWS::Logs::LogGroup
     Properties:

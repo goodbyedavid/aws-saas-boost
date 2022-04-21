@@ -1,0 +1,142 @@
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License").
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: SaaS Boost Tenant Onboarding AWS OpenSearch Service
+
+Parameters:
+  TenantId:
+    Description: Id for the tenant
+    Type: String
+  VPC:
+    Description: VPC id for this tenant
+    Type: AWS::EC2::VPC::Id
+  PrivateSubnetA:
+    Description: Private subnet for opensearch
+    Type: AWS::EC2::Subnet::Id
+  PrivateSubnetB:
+    Description: Private subnet for opensearch
+    Type: AWS::EC2::Subnet::Id
+  ECSSecurityGroup:
+    Description: Source security group for ECS to access OpenSearch
+    Type: AWS::EC2::SecurityGroup::Id
+  CustomEndpointEnabled:
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'false'
+  OpenSearchPort:
+    Description: The TCP port to connect to the Opensearch Service on
+    Type: String
+    Default: '80'
+  DomainName:
+    Description: The name of the AWS OpenSearch Service domain.
+    Type: String
+    ConstraintDescription: Must be a valid AWS OpenSearch domain name prefix. The name must start with a
+      lowercase letter and must be between 3 and 28 characters. Valid characters
+      are a-z (lowercase only), 0-9, and - (hyphen).
+    AllowedPattern: '[a-z][a-z0-9\\-]+' 
+  EngineVersion:
+    Default: 'OpenSearch_1.2'
+    Type: String
+  DataInstanceType:
+    Description: Instance type for data nodes.
+    Type: String
+    Default: 'm5.large.search'
+  MasterInstanceType:
+    Description: Instance type for master nodes.
+    Type: String
+    Default: 't3.small.search'  
+  NumberOfMasterNodes:
+    Description: How many dedicated master nodes you want to have. 3 is recommended.
+    Type: Number
+    Default: 3
+  NumberOfDataNodes:
+    Description: How many data nodes you want to have. Multiples of your number of availability zones (2) is recommended.
+    Type: Number
+    Default: '2'
+    MinValue: '1'
+    MaxValue: '20'
+  EBSEnabled:
+    Description: 'Specifies whether Amazon EBS volumes are attached to data nodes in OpenSearch domain (some instance types come with instance store that you can use instead).'
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'true'
+  EBSVolumeSize:
+    Description: 'The size of the EBS volume for each data node. The minimum and maximum size of an EBS volume depends on the EBS volume type and the instance type to which it is attached.'
+    Type: Number
+    Default: '10'
+
+Resources:
+  OpenSearchSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName:
+        Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-opensearch-sg']]
+      GroupDescription: OpenSearch Security Group
+      VpcId: !Ref VPC
+  OpenSearchSecurityGroupIngressECS:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref OpenSearchSecurityGroup
+      IpProtocol: tcp
+      FromPort: !Ref OpenSearchPort
+      ToPort: !Ref OpenSearchPort
+      SourceSecurityGroupId: !Ref ECSSecurityGroup
+  OpenSearchDomain:
+    DependsOn: OpenSearchSecurityGroup
+    Type: AWS::OpenSearchService::Domain
+    Properties: 
+      AccessPolicies:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: '*'
+            Action: "es:*"
+            Resource: !Sub "arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/${DomainName}/*"
+      AdvancedOptions: 
+        rest.action.multi.allow_explicit_index: true
+        override_main_response_version: true
+      ClusterConfig: 
+        InstanceCount: !Ref NumberOfDataNodes
+        InstanceType: !Ref DataInstanceType
+        DedicatedMasterEnabled: false
+        DedicatedMasterCount: !Ref NumberOfMasterNodes
+        DedicatedMasterType: !Ref MasterInstanceType
+        ZoneAwarenessEnabled: true
+      DomainName: !Ref DomainName
+      EBSOptions: 
+        EBSEnabled: !Ref EBSEnabled
+        VolumeSize: !Ref EBSVolumeSize
+        VolumeType: standard
+      EngineVersion: !Ref EngineVersion
+      Tags: 
+        - Key: Tenant
+          Value: !Ref TenantId
+      VPCOptions: 
+        SubnetIds:
+          - !Ref PrivateSubnetA
+          - !Ref PrivateSubnetB
+        SecurityGroupIds:
+        - !Ref OpenSearchSecurityGroup
+
+Outputs:
+  Arn:
+    Value: !GetAtt OpenSearchDomain.Arn    
+  OpenSearchDomainEndpoint:
+    Description: OpenSearch Domain endpoint
+    Value: !GetAtt OpenSearchDomain.DomainEndpoint
+  OpenSearchSecurityGroupId:
+    Description: The OpenSearch Cluster
+    Value: !Ref OpenSearchSecurityGroup
