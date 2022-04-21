@@ -21,17 +21,14 @@ Parameters:
   VPC:
     Description: VPC id for this tenant
     Type: AWS::EC2::VPC::Id
-  # PrivateSubnetA:
-  #   Description: Private subnet for ES
-  #   Type: AWS::EC2::Subnet::Id
-  SubnetPublicA:
-    Description: Public subnet for ES
+  PrivateSubnetA:
+    Description: Private subnet for ES
     Type: AWS::EC2::Subnet::Id
-  # PrivateSubnetB:
-  #   Description: Private subnet for EFS mount target
-  #   Type: AWS::EC2::Subnet::Id
+  PrivateSubnetB:
+    Description: Private subnet for ES
+    Type: AWS::EC2::Subnet::Id
   ECSSecurityGroup:
-    Description: Source security group for ECS to access EFS
+    Description: Source security group for ECS to access OpenSearch
     Type: AWS::EC2::SecurityGroup::Id
   CustomEndpointEnabled:
     Type: String
@@ -41,16 +38,19 @@ Parameters:
     Type: String
     AllowedValues: ['true', 'false']
     Default: 'false'
+  ESPort:
+    Type: String
+    Default: '80'
   ESPortHTTP:
     Type: String
     Default: '80'
   ESPortHTTPS:
     Type: String
     Default: '443'
-  TLSSecurityPolicy:
-    Type: String
-    AllowedValues: ['true', 'false']
-    Default: 'false'
+  # TLSSecurityPolicy:
+  #   Type: String
+  #   AllowedValues: ['true', 'false']
+  #   Default: 'false'
   ElasticsearchName:
     Description: The name of the AWS Elasticsearch Service deployment.
     Type: String
@@ -62,11 +62,15 @@ Parameters:
     Default: 'OpenSearch_1.2'
     Type: String
     ConstraintDescription: Must be an allowed AWS ES version (Major.Minor)
-    AllowedValues: ["OpenSearch_1.2","OpenSearch_1.1","OpenSearch_1.0","7.10","7.9","7.8","7.7","7.4","7.1","6.8","6.7","6.5","6.4","6.3","6.2","6.0","5.6","5.5","5.3","5.1","2.3","1.5"] # aws es list-elasticsearch-versions --query "ElasticsearchVersions[]"
+    AllowedValues: ["OpenSearch_1.2","OpenSearch_1.1","OpenSearch_1.0"] # aws opensearch list-elasticsearch-versions --query "ElasticsearchVersions[]"
   ElasticsearchDataInstanceType:
     Description: Instance type for data nodes.
     Type: String
-    Default: 'r5.2xlarge.elasticsearch'
+    Default: 'm5.large.search'
+  ElasticsearchMasterInstanceType:
+    Description: Instance type for master nodes.
+    Type: String
+    Default: 't3.small.search'  
   NumberOfMasterNodes:
     Description: How many dedicated master nodes you want to have. 3 is recommended.
     Type: Number
@@ -87,8 +91,7 @@ Parameters:
     Type: Number
     Default: '10'
 Conditions:
-  ShouldEnforceHTTPS: Equals [ !Ref "EnforceHTTPS", "true" ]
-
+  ShouldEnforceHTTPS: !Equals [ !Ref "EnforceHTTPS", "true" ]
 Resources:
   ESSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -106,34 +109,35 @@ Resources:
       FromPort: !If [ShouldEnforceHTTPS, !Ref ESPortHTTP, !Ref ESPortHTTPS]
       ToPort: !If [ShouldEnforceHTTPS, !Ref ESPortHTTP, !Ref ESPortHTTPS]
       SourceSecurityGroupId: !Ref ECSSecurityGroup
-
   ElasticsearchDomain:
     DependsOn: ESSecurityGroup
-    Type: AWS::Elasticsearch::Domain
+    Type: AWS::OpenSearchService::Domain
     Properties:
-      ElasticsearchVersion: !Ref ElasticsearchVersion
+      EngineVersion: !Ref ElasticsearchVersion
       DomainName: !Ref ElasticsearchName
       DomainEndpointOptions: 
         EnforceHTTPS: !Ref EnforceHTTPS
       EBSOptions:
         EBSEnabled: !Ref EBSEnabled
-        Iops: 0
         VolumeSize: !Ref EBSVolumeSize
         VolumeType: standard
-      ElasticsearchClusterConfig:
+      ClusterConfig:
         InstanceCount: !Ref NumberOfDataNodes
         InstanceType: !Ref ElasticsearchDataInstanceType
-        ZoneAwarenessEnabled: false
+        DedicatedMasterEnabled: true
+        DedicatedMasterCount: !Ref NumberOfMasterNodes
+        DedicatedMasterType: !Ref ElasticsearchMasterInstanceType
+        ZoneAwarenessEnabled: true
       AdvancedOptions:
         rest.action.multi.allow_explicit_index: "true"
       SnapshotOptions:
         AutomatedSnapshotStartHour: 0
       VPCOptions:
         SubnetIds:
-          - !Ref SubnetPublicA
-          # - !Ref PrivateSubnetB
+          - !Ref PrivateSubnetA
+          - !Ref PrivateSubnetB
         SecurityGroupIds:
-        - !Ref ESSecurityGroup
+        - !Ref ESSecurityGroup  
       AccessPolicies:
         Version: 2012-10-17
         Statement:
@@ -145,7 +149,6 @@ Resources:
       Tags:
         - Key: Tenant
           Value: !Ref TenantId
-
 Outputs:
   Arn:
     Value: !GetAtt ElasticsearchDomain.Arn    
@@ -165,6 +168,4 @@ Outputs:
     Value: !Ref ESPortHTTPS
   # ESSubnetID:
   #   Description: VPC Subnet ID for Elasticsearch Cluster 
-  #   Value: !Ref PrivateSubnetA
-
-...
+  #   Value: !Ref SubnetPrivateA
