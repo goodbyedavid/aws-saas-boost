@@ -123,7 +123,7 @@ Parameters:
     Description: Deploy the OpenSearch nested stack?
     Type: String
     AllowedValues: ['true', 'false']
-    Default: 'true'
+    Default: 'true'  #default to true as of now for development purpose.
   ElasticsearchVersion:
     Default: 'OpenSearch_1.2'
     Type: String
@@ -132,42 +132,88 @@ Parameters:
   ElasticsearchMasterInstanceType:
     Description: Instance type for master nodes.
     Type: String
-    Default: t2.small.elasticsearch
+    Default: t3.small.search
     AllowedValues:
-      - r5.large.elasticsearch
-      - r5.xlarge.elasticsearch
-      - r5.2xlarge.elasticsearch
-      - r5.4xlarge.elasticsearch
-      - r5.12xlarge.elasticsearch
-      - t2.small.elasticsearch
-      - t2.medium.elasticsearch
-      - c4.large.elasticsearch
-      - c4.xlarge.elasticsearch
-      - c4.2xlarge.elasticsearch
-      - c4.4xlarge.elasticsearch
-      - c4.8xlarge.elasticsearch
-      - i2.xlarge.elasticsearch
-      - i2.2xlarge.elasticsearch
-      - m4.large.elasticsearch
-      - m4.xlarge.elasticsearch
-      - m4.2xlarge.elasticsearch
-      - m4.4xlarge.elasticsearch
-      - m4.10xlarge.elasticsearch
-      - r4.large.elasticsearch
-      - r4.xlarge.elasticsearch
-      - r4.2xlarge.elasticsearch
-      - r4.4xlarge.elasticsearch
-      - r4.8xlarge.elasticsearch
-      - r4.16xlarge.elasticsearch
-      - m3.medium.elasticsearch
-      - m3.large.elasticsearch
-      - m3.xlarge.elasticsearch
-      - m3.2xlarge.elasticsearch
-      - r3.large.elasticsearch
-      - r3.xlarge.elasticsearch
-      - r3.2xlarge.elasticsearch
-      - r3.4xlarge.elasticsearch
-      - r3.8xlarge.elasticsearch
+      - t3.small.search
+      - t3.medium.search
+      - c5.large.search
+      - c5.xlarge.search
+      - c5.2xlarge.search
+      - c5.4xlarge.search
+      - c5.9xlarge.search
+      - c5.18xlarge.search
+      - i3.large.search
+      - i3.xlarge.search
+      - i3.2xlarge.search
+      - i3.4xlarge.search
+      - i3.8xlarge.search
+      - i3.16xlarge.search
+      - m5.large.search
+      - m5.xlarge.search
+      - m5.2xlarge.search
+      - m5.4xlarge.search
+      - m5.12xlarge.search
+      - r5.large.search
+      - r5.xlarge.search
+      - r5.2xlarge.search
+      - r5.4xlarge.search
+      - r5.12xlarge.search
+      - t2.small.search
+      - t2.medium.search
+      - c4.large.search
+      - c4.xlarge.search
+      - c4.2xlarge.search
+      - c4.4xlarge.search
+      - c4.8xlarge.search
+      - i2.xlarge.search
+      - i2.2xlarge.search
+      - m4.large.search
+      - m4.xlarge.search
+      - m4.2xlarge.search
+      - m4.4xlarge.search
+      - m4.10xlarge.search
+      - r4.large.search
+      - r4.xlarge.search
+      - r4.2xlarge.search
+      - r4.4xlarge.search
+      - r4.8xlarge.search
+      - r4.16xlarge.search
+      - m3.medium.search
+      - m3.large.search
+      - m3.xlarge.search
+      - m3.2xlarge.search
+      - r3.large.search
+      - r3.xlarge.search
+      - r3.2xlarge.search
+      - r3.4xlarge.search
+      - r3.8xlarge.search
+      - m6g.large.search
+      - m6g.xlarge.search
+      - m6g.2xlarge.search
+      - m6g.4xlarge.search
+      - m6g.8xlarge.search
+      - m6g.12xlarge.search
+      - c6g.large.search
+      - c6g.xlarge.search
+      - c6g.2xlarge.search
+      - c6g.4xlarge.search
+      - c6g.8xlarge.search
+      - c6g.12xlarge.search
+      - r6g.large.search
+      - r6g.xlarge.search
+      - r6g.2xlarge.search
+      - r6g.4xlarge.search
+      - r6g.8xlarge.search
+      - r6g.12xlarge.search
+      - r6gd.large.search
+      - r6gd.xlarge.search
+      - r6gd.2xlarge.search
+      - r6gd.4xlarge.search
+      - r6gd.8xlarge.search
+      - r6gd.12xlarge.search
+      - r6gd.16xlarge.search
+      - ultrawarm1.medium.search
+      - ultrawarm1.large.search
   ElasticsearchDataInstanceType:
     Description: Instance type for data nodes.
     Type: String
@@ -220,9 +266,9 @@ Parameters:
     Default: 2
     MinValue: 1
     MaxValue: 20
-# CustomEndpoint:
-# Description: Name for custom endpoint
-# Type: string
+  # CustomEndpoint:
+  # Description: Name for custom endpoint
+  # Type: string
   CustomEndpointEnabled:
     Type: String
     AllowedValues: ['true', 'false']
@@ -517,7 +563,7 @@ Resources:
           Value: !Ref TenantId
      
 
-####Capacity Provider Changes
+  ####Capacity Provider Changes
   CapacityProvider:
     Type: AWS::ECS::CapacityProvider
     Condition: WindowsOS
@@ -625,8 +671,8 @@ Resources:
   DisableInstanceProtectionLogs:
     Type: AWS::Logs::LogGroup
     Condition: WindowsOS
-#    DeletionPolicy: Retain 
-#    UpdateReplacePolicy: Retain   
+# DeletionPolicy: Retain 
+# UpdateReplacePolicy: Retain   
     Properties:
       LogGroupName:
         Fn::Join: ['', ['/aws/lambda/tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-disable-protection']]
@@ -659,7 +705,7 @@ Resources:
     Properties:
       ServiceToken: !GetAtt DisableInstanceProtectionFunction.Arn     
       AutoScalingGroup: !Ref ECSAutoScalingGroup     
-## end changes          
+  ## end changes          
 
   ECSTaskExecutionRole:
     Type: AWS::IAM::Role
@@ -824,26 +870,26 @@ Resources:
                   Value: !Ref RDSDatabase
               - - Name: SAAS_BOOST_BUCKET
                   Value: !Ref SaaSBoostBucket
-              - !If
-                - ProvisionES
-                -
-                  - Name: AWS_REGION
-                    Value: !Ref AWS::Region
-                  - Name: TENANT_ID
-                    Value: !Ref TenantId
-                  - Name: SAAS_BOOST_EVENT_BUS
-                    Value: !Ref EventBus
-                  - Name: METRICS_STREAM
-                    Value: !Ref MetricsStream
-                  - Name: ES_CLUSTER_NAME
-                    Value: !GetAtt es.Outputs.ESClusterName
-                  - Name: ES_CLUSTER_ENDPOINT
-                    Value: !GetAtt es.Outputs.ESDomainEndpoint
-                  - Name: ES_CLUSTER_PORT
-                    Value: !GetAtt es.Outputs.ESClusterPort
-                  - Name: ES_CLUSTER_PORT_DEFAULT
-                    Value: !GetAtt es.Outputs.ESClusterPortDefault
-                - !Ref 'AWS::NoValue' 
+            # Fn::If:
+            #   - ProvisionES
+            #   -
+            #     - Name: AWS_REGION
+            #       Value: !Ref AWS::Region
+            #     - Name: TENANT_ID
+            #       Value: !Ref TenantId
+            #     - Name: SAAS_BOOST_EVENT_BUS
+            #       Value: !Ref EventBus
+            #     - Name: METRICS_STREAM
+            #       Value: !Ref MetricsStream
+            #     - Name: ES_CLUSTER_NAME
+            #       Value: !GetAtt es.Outputs.ESClusterName
+            #     - Name: ES_CLUSTER_ENDPOINT
+            #       Value: !GetAtt es.Outputs.ESDomainEndpoint
+            #     - Name: ES_CLUSTER_PORT
+            #       Value: !GetAtt es.Outputs.ESClusterPort
+            #     - Name: ES_CLUSTER_PORT_DEFAULT
+            #       Value: !GetAtt es.Outputs.ESClusterPortDefault
+            #   - !Ref 'AWS::NoValue' 
           MountPoints:
             !If
               - ProvisionEFS
@@ -1531,7 +1577,7 @@ Resources:
         ECSSecurityGroup: !Ref ECSSecurityGroup
         EncryptEFS: !Ref EncryptEFS
         EFSLifecyclePolicy: !Ref EFSLifecyclePolicy
-# ElasticSearch Extension
+  # ElasticSearch Extension
   es:
     Type: AWS::CloudFormation::Stack
     Condition: ProvisionES
@@ -1563,8 +1609,9 @@ Resources:
         SubnetPrivateA: !Ref SubnetPrivateA
         SubnetPrivateB: !Ref SubnetPrivateB
         ElasticsearchVersion: !Ref ElasticsearchVersion
-        ECSSecurityGroup: !Ref ECSSecurityGroup
+        #ECSSecurityGroup: !Ref ECSSecurityGroup
         ElasticsearchDataInstanceType: !Ref ElasticsearchDataInstanceType
+        NumberOfMasterNodes: !Ref NumberOfMasterNodes
         NumberOfDataNodes: !Ref NumberOfDataNodes
         EnforceHTTPS: !Ref EnforceHTTPS
         ESPort: !If [!Ref ShouldEnforceHTTPS, !Ref ESPortHTTPS, !Ref ESPortHTTP]
