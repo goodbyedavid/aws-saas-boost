@@ -112,8 +112,8 @@ Resources:
         InstanceCount: !Ref NumberOfDataNodes
         InstanceType: !Ref DataInstanceType
         DedicatedMasterEnabled: false
-        DedicatedMasterCount: !Ref NumberOfMasterNodes
-        DedicatedMasterType: !Ref MasterInstanceType
+        # DedicatedMasterCount: !Ref NumberOfMasterNodes
+        # DedicatedMasterType: !Ref MasterInstanceType
         ZoneAwarenessEnabled: true
       DomainName: !Ref DomainName
       EBSOptions: 

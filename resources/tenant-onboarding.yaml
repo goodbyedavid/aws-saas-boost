@@ -1585,7 +1585,7 @@ Resources:
       - TenantVpcTgwAssociation
       - UpdateRouteTable
     Properties:
-      TemplateURL: !Sub https://${SaaSBoostBucket}.s3.amazonaws.com/tenant-onboarding-es.yaml
+      TemplateURL: !Sub https://${SaaSBoostBucket}.s3.amazonaws.com/tenant-onboarding-opensearch.yaml
       TimeoutInMinutes: 30
       Parameters:
         TenantId: !Ref TenantId
@@ -1596,7 +1596,7 @@ Resources:
         PrivateSubnetB: !Ref SubnetPrivateB
         ECSSecurityGroup: !Ref ECSSecurityGroup
         DomainName: 
-          Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-opensearch-cluster']]
+          Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-cluster']]
         EngineVersion: !Ref OpenSearchEngineVersion
         DataInstanceType: !Ref OpenSearchDataInstanceType
         MasterInstanceType: !Ref OpenSearchMasterInstanceType
