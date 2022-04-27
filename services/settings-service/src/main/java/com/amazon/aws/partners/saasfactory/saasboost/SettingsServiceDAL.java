@@ -553,6 +553,14 @@ public class SettingsServiceDAL {
             }
         }
 
+        Opensearch opensearch = null;
+        if (Utils.isNotEmpty(appSettings.get("OPENSEARCH_ENGINE_VERSION"))){
+            opensearch = Opensearch.builder()
+                    .engineVersion(appSettings.get("OPENSEARCH_ENGINE_VERSION"))
+                    .dataInstanceType(appSettings.get("OPENSEARCH_DATA_INSTANCE_TYPE"))
+                    .build();
+        }
+
         appConfig = AppConfig.builder()
                 .name(appSettings.get("APP_NAME"))
                 .domainName(appSettings.get("DOMAIN_NAME"))
@@ -569,6 +577,7 @@ public class SettingsServiceDAL {
                 .database(database)
                 .filesystem(filesystem)
                 .billing(billingProvider)
+                .opensearch(opensearch)
                 .build();
 
         return appConfig;
@@ -799,6 +808,15 @@ public class SettingsServiceDAL {
             settings.add(Setting.builder().name("DB_MASTER_PASSWORD").value(null).readOnly(false).secure(true).build());
             settings.add(Setting.builder().name("DB_PORT").value(null).readOnly(false).build());
             settings.add(Setting.builder().name("DB_BOOTSTRAP_FILE").value(null).readOnly(false).build());
+        }
+
+        Opensearch opensearch = appConfig.getOpensearch();
+        if (opensearch != null) {
+            settings.add(Setting.builder().name("OPENSEARCH_ENGINE_VERSION").value(opensearch.getEngineVersion()).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_DATA_INSTANCE_TYPE").value(opensearch.getDataInstanceType()).readOnly(false).build());
+        } else {
+            settings.add(Setting.builder().name("OPENSEARCH_ENGINE_VERSION").value(null).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_DATA_INSTANCE_TYPE").value(null).readOnly(false).build());
         }
 
         BillingProvider billing = appConfig.getBilling();

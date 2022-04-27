@@ -38,6 +38,7 @@ public class AppConfig {
     private SharedFilesystem filesystem;
     private Database database;
     private BillingProvider billing;
+    private Opensearch opensearch;
 
     private AppConfig(Builder builder) {
         this.name = builder.name;
@@ -317,6 +318,11 @@ public class AppConfig {
 
         public Builder billing(BillingProvider billing) {
             this.billing = billing;
+            return this;
+        }
+
+        public Builder opensearch(Opensearch opensearch) {
+            this.opensearch = opensearch;
             return this;
         }
 
