@@ -21,6 +21,8 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import org.apache.logging.log4j.util.PropertySource.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import software.amazon.awssdk.auth.credentials.EnvironmentVariableCredentialsProvider;
@@ -723,6 +725,18 @@ public class OnboardingService implements RequestHandler<Map<String, Object>, AP
                 }
             }
 
+
+            // Did the ISV configure the application for an OpenSearch Cluster?
+            Boolean enableOpenSearch = Boolean.FALSE;
+            String opensearchEngineVersion = "";
+            String opensearchDataInstanceType = "";
+            if (Utils.isNotBlank(settings.get("OPENSEARCH_ENGINE_VERSION"))){
+                enableOpenSearch = Boolean.TRUE;
+                opensearchEngineVersion = settings.get("OPENSEARCH_ENGINE_VERSION");
+                opensearchDataInstanceType = settings.get("OPENSEARCH_DATA_INSTANCE_TYPE");
+            }
+
+
             // If the tenant is being onboarded into a billing plan, we need to send
             // it through so we can configure it with the 3rd party when the stack completes
             String billingPlan = (String) tenant.get("planId");
@@ -816,6 +830,10 @@ public class OnboardingService implements RequestHandler<Map<String, Object>, AP
             templateParameters.add(Parameter.builder().parameterKey("ALBAccessLogsBucket").parameterValue(settings.get("ALB_ACCESS_LOGS_BUCKET")).build());
             templateParameters.add(Parameter.builder().parameterKey("EventBus").parameterValue(settings.get("EVENT_BUS")).build());
             templateParameters.add(Parameter.builder().parameterKey("BillingPlan").parameterValue(billingPlan).build());
+            templateParameters.add(Parameter.builder().parameterKey("UseOpenSearch").parameterValue(enableOpenSearch.toString()).build());
+            templateParameters.add(Parameter.builder().parameterKey("OpenSearchEngineVersion").parameterValue(opensearchEngineVersion).build());
+            templateParameters.add(Parameter.builder().parameterKey("OpenSearchDataInstanceType").parameterValue(opensearchDataInstanceType).build());
+
             for (Parameter p : templateParameters) {
                 if (p.parameterValue() == null) {
                     LOGGER.error("OnboardingService::provisionTenant template parameter {} is NULL", p.parameterKey());

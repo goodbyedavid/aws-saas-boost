@@ -121,7 +121,7 @@ Parameters:
     Description: Deploy the OpenSearch nested stack?
     Type: String
     AllowedValues: ['true', 'false']
-    Default: 'true' #default to true for testing purpose as of now
+    Default: 'false' #default to true for testing purpose as of now
   OpenSearchEngineVersion:
     Default: 'OpenSearch_1.2'
     Type: String
@@ -408,8 +408,8 @@ Parameters:
 Conditions:
   HasDomainName: !Not [!Equals [!Ref DomainName, '']]
   ProvisionEFS: !Equals [!Ref UseEFS, 'true']
-  ProvisionOpenSearch: !Equals [!Ref UseOpenSearch, 'true']
   ProvisionRDS: !Equals [!Ref UseRDS, 'true']
+  ProvisionOpenSearch: !Equals [!Ref UseOpenSearch, 'true']
   WindowsOS: !Not [!Equals [!Ref DockerHostOS, 'LINUX']]
   HasCertificate: !Not [!Equals [!Ref SSLCertArnParam, '']]
   NoCertificate: !Not [Condition: HasCertificate]
@@ -839,6 +839,17 @@ Resources:
                   - ssmmessages:OpenControlChannel
                   - ssmmessages:OpenDataChannel
                 Resource: '*'
+              - Effect: Allow
+                Action: es:*
+                Resource: 
+                  - !Join 
+                    - ''
+                    - - 'arn:aws:es:'
+                      - !Ref AWS::Region
+                      - ':'
+                      - !Ref AWS::AccountId
+                      - ':domain/'
+                      - !Join ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]], '-cluster']]
   ECSTaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
@@ -871,23 +882,70 @@ Resources:
               awslogs-group: !Ref ECSLogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
+          # Environment:
+          #   Fn::If:
+          #     - ProvisionRDS
+          #     - - Name: AWS_REGION
+          #         Value: !Ref AWS::Region
+          #       - Name: TENANT_ID
+          #         Value: !Ref TenantId
+          #       - Name: SAAS_BOOST_EVENT_BUS
+          #         Value: !Ref EventBus
+          #       - Name: METRICS_STREAM
+          #         Value: !Ref MetricsStream
+          #       - Name: DB_HOST
+          #         Value: !GetAtt rds.Outputs.RdsEndpoint
+          #       - Name: DB_NAME
+          #         Value: !Ref RDSDatabase
+          #     - - Name: SAAS_BOOST_BUCKET
+          #         Value: !Ref SaaSBoostBucket
           Environment:
             Fn::If:
               - ProvisionRDS
-              - - Name: AWS_REGION
-                  Value: !Ref AWS::Region
-                - Name: TENANT_ID
-                  Value: !Ref TenantId
-                - Name: SAAS_BOOST_EVENT_BUS
-                  Value: !Ref EventBus
-                - Name: METRICS_STREAM
-                  Value: !Ref MetricsStream
-                - Name: DB_HOST
-                  Value: !GetAtt rds.Outputs.RdsEndpoint
-                - Name: DB_NAME
-                  Value: !Ref RDSDatabase
-              - - Name: SAAS_BOOST_BUCKET
-                  Value: !Ref SaaSBoostBucket
+              - 
+                Fn::If:
+                  - ProvisionOpenSearch
+                  - # RDS and OpenSearch both enabled
+                    - Name: AWS_REGION
+                      Value: !Ref AWS::Region
+                    - Name: TENANT_ID
+                      Value: !Ref TenantId
+                    - Name: SAAS_BOOST_EVENT_BUS
+                      Value: !Ref EventBus
+                    - Name: METRICS_STREAM
+                      Value: !Ref MetricsStream
+                    - Name: DB_HOST
+                      Value: !GetAtt rds.Outputs.RdsEndpoint
+                    - Name: DB_NAME
+                      Value: !Ref RDSDatabase
+                    - Name: OPENSEARCH_DOMAIN_ENDPOINT
+                      Value: !GetAtt opensearch.Outputs.OpenSearchDomainEndpoint
+                    - Name: OPENSEARCH_SECURITYGROUP_ID
+                      Value: !GetAtt opensearch.Outputs.OpenSearchSecurityGroupId
+                  - # Only RDS enabled
+                    - Name: AWS_REGION
+                      Value: !Ref AWS::Region
+                    - Name: TENANT_ID
+                      Value: !Ref TenantId
+                    - Name: SAAS_BOOST_EVENT_BUS
+                      Value: !Ref EventBus
+                    - Name: METRICS_STREAM
+                      Value: !Ref MetricsStream
+                    - Name: DB_HOST
+                      Value: !GetAtt rds.Outputs.RdsEndpoint
+                    - Name: DB_NAME
+                      Value: !Ref RDSDatabase
+              - 
+                Fn::If:
+                  - ProvisionOpenSearch
+                  - # Only OpenSearch Enabled
+                    - Name: OPENSEARCH_DOMAIN_ENDPOINT
+                      Value: !GetAtt opensearch.Outputs.OpenSearchDomainEndpoint
+                    - Name: OPENSEARCH_SECURITYGROUP_ID
+                      Value: !GetAtt opensearch.Outputs.OpenSearchSecurityGroupId
+                  - # RDS and OpenSearch both disabled
+                    - Name: SAAS_BOOST_BUCKET
+                      Value: !Ref SaaSBoostBucket
           MountPoints:
             !If
               - ProvisionEFS
