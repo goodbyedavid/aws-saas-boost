@@ -138,9 +138,11 @@ export function ApplicationContainer(props) {
         provisionDb,
         provisionFS,
         provisionBilling,
+        provisionOpenSearch,
         filesystem,
         database,
         billing,
+        opensearch,
         ...rest
       } = values;
       let { filesystemLifecycle, ...cleanedFs } = filesystem;
@@ -171,6 +173,7 @@ export function ApplicationContainer(props) {
         filesystem: provisionFS ? cleanedFs : null,
         database: provisionDb ? cleanedDb : null,
         billing: provisionBilling ? billing : null,
+        opensearch: provisionOpenSearch ? opensearch : null,
         operatingSystem: operatingSystem === LINUX ? LINUX : windowsVersion,
       };
       if (!!file && file.name && provisionDb) {

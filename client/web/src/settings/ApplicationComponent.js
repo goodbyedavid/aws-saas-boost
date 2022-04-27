@@ -27,6 +27,7 @@ import FileSystemSubform from './FileSystemSubform';
 import DatabaseSubform from './DatabaseSubform';
 import ContainerSettingsSubform from './ContainerSettingsSubform';
 import BillingSubform from './BillingSubform';
+import OpenSearchSubform from './OpenSearchSubform';
 
 import { dismissConfigError, dismissConfigMessage } from './ducks';
 
@@ -142,10 +143,12 @@ export function ApplicationComponent(props) {
     billing: appConfig.billing || {
       apiKey: '',
     },
+    opensearch: appConfig.opensearch || { engineVersion: '', dataInstanceType: '' },
 
     provisionDb: !!appConfig.database,
     provisionFS: !!appConfig.filesystem,
     provisionBilling: !!appConfig.billing,
+    provisionOpenSearch: !!appConfig.opensearch,
   };
 
   const validationSpecs = Yup.object({
@@ -319,6 +322,10 @@ export function ApplicationComponent(props) {
                   values={formik.values?.database}
                   onFileSelected={(file) => onFileSelected(formik, file)}
                 ></DatabaseSubform>
+                <OpenSearchSubform
+                  provisionOpenSearch={formik.values.provisionOpenSearch}
+                  values={formik.values?.opensearch}
+                ></OpenSearchSubform>
                 <BillingSubform
                   provisionBilling={formik.values.provisionBilling}
                   values={formik.values?.billing}
