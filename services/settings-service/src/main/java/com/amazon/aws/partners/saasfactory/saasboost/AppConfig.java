@@ -56,6 +56,7 @@ public class AppConfig {
         this.filesystem = builder.filesystem;
         this.database = builder.database;
         this.billing = builder.billing;
+        this.opensearch = builder.opensearch;
     }
 
     public static Builder builder() {
@@ -183,6 +184,10 @@ public class AppConfig {
                 healthCheckURL, operatingSystem, instanceType, filesystem, database, billing);
     }
 
+    public Opensearch getOpensearch(){
+        return opensearch;
+    }
+
     @JsonPOJOBuilder(withPrefix = "") // setters aren't named with[Property]
     public static final class Builder {
 
@@ -201,6 +206,7 @@ public class AppConfig {
         private SharedFilesystem filesystem;
         private Database database;
         private BillingProvider billing;
+        private Opensearch opensearch;
 
         private Builder() {
         }

@@ -42,14 +42,12 @@ public class Opensearch {
     }
 
     @JsonPOJOBuilder(withPrefix = "") // setters aren't named with[Property]
-    private static final class Builder {
+    public static final class Builder {
 
         private String engineVersion = "OpenSearch_1.2";
         private String dataInstanceType = "r5.large.search";
 
-        private Builder builder() {
-            return new Builder();
-        }
+        private Builder() {}
 
         public Builder engineVersion(String engineVersion) {
             this.engineVersion = engineVersion;
