@@ -491,6 +491,10 @@ public class SettingsServiceDAL {
                         Collectors.toMap(Setting::getName, Setting::getValue)
                 );
 
+        for (Map.Entry<String,String> entry : appSettings.entrySet())
+        LOGGER.info("Key = " + entry.getKey() +
+                            ", Value = " + entry.getValue());
+
         // Get the secret value for the optional billing provider or you'll always
         // be testing for empty against the encrypted hash of the "N/A" sentinel string
         AppConfig appConfig = toAppConfig(appSettings, getSecret("BILLING_API_KEY"));
@@ -554,11 +558,11 @@ public class SettingsServiceDAL {
         }
 
         Opensearch opensearch = null;
-        if (Utils.isNotEmpty(appSettings.get("OPENSEARCH_ENGINE_VERSION"))){
+        if (Utils.isNotEmpty(appSettings.get("OPENSEARCH_ENGINE_VERSION"))) {
             opensearch = Opensearch.builder()
-                    .engineVersion(appSettings.get("OPENSEARCH_ENGINE_VERSION"))
-                    .dataInstanceType(appSettings.get("OPENSEARCH_DATA_INSTANCE_TYPE"))
-                    .build();
+                        .engineVersion(appSettings.get("OPENSEARCH_ENGINE_VERSION"))
+                        .dataInstanceType(appSettings.get("OPENSEARCH_DATA_INSTANCE_TYPE"))
+                        .build();
         }
 
         appConfig = AppConfig.builder()
