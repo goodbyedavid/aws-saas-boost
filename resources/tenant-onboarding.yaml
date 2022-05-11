@@ -1648,8 +1648,8 @@ Resources:
       Parameters:
         TenantId: !Ref TenantId
         VPC: !Ref VPC
-        # SubnetPublicA: !Ref SubnetPublicA
-        # SubnetPublicB: !Ref SubnetPublicB
+        PublicSubnetA: !Ref SubnetPublicA
+        PublicSubnetB: !Ref SubnetPublicB
         PrivateSubnetA: !Ref SubnetPrivateA
         PrivateSubnetB: !Ref SubnetPrivateB
         ECSSecurityGroup: !Ref ECSSecurityGroup

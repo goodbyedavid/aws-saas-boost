@@ -13,7 +13,7 @@
 # limitations under the License.
 ---
 AWSTemplateFormatVersion: 2010-09-09
-Description: SaaS Boost Tenant Onboarding AWS OpenSearch Service
+Description: SaaS Boost Tenant Onboarding AWS OpenSearch Extension
 
 Parameters:
   TenantId:
@@ -27,6 +27,12 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
   PrivateSubnetB:
     Description: Private subnet for opensearch
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnetA:
+    Description: Public subnet for opensearch
+    Type: AWS::EC2::Subnet::Id
+  PublicSubnetB:
+    Description: Public subnet for opensearch
     Type: AWS::EC2::Subnet::Id
   ECSSecurityGroup:
     Description: Source security group for ECS to access OpenSearch
@@ -126,8 +132,8 @@ Resources:
           Value: !Ref TenantId
       VPCOptions: 
         SubnetIds:
-          - !Ref PrivateSubnetA
-          - !Ref PrivateSubnetB
+          - !Ref PublicSubnetA
+          - !Ref PublicSubnetB
         SecurityGroupIds:
         - !Ref OpenSearchSecurityGroup
 
