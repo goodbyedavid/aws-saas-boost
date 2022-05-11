@@ -51,20 +51,32 @@ export default function OpenSearchSubform(props) {
                       <option value="OpenSearch_1.1">OpenSearch_1.1</option>
                       <option value="OpenSearch_1.2">OpenSearch_1.2</option>
                     </SaasBoostSelect>
+                    <SaasBoostSelect
+                      type="select"
+                      name="opensearch.dataInstanceType"
+                      id="opensearch.dataInstanceType"
+                      label="Opensearch DataInstanceType"
+                    >
+                      <option value="">Select One...</option>
+                      <option value="t3.small.search">SMALL</option>
+                      <option value="r5.large.search">Medium</option>
+                      <option value="r5.2xlarge.search">LARGE</option>
+                    </SaasBoostSelect>                    
 
                     {/* <SaasBoostInput
                       key="opensearch.engineVersion"
                       label="Please enter the opensearch enginer version"
                       name="opensearch.engineVersion"
                       type="text"
-                    /> */}
+                    /> 
 
                     <SaasBoostInput
                       key="opensearch.dataInstanceType"
                       label="Please enter the opensearch data instance type"
                       name="opensearch.dataInstanceType"
                       type="text"
-                    />
+                    /> */}
+
                   </Col>
                 </Row>
               )}
