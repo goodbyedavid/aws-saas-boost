@@ -323,6 +323,8 @@ export function ApplicationComponent(props) {
                   onFileSelected={(file) => onFileSelected(formik, file)}
                 ></DatabaseSubform>
                 <OpenSearchSubform
+                  isLocked={hasTenants}
+                  formik={formik}
                   provisionOpenSearch={formik.values.provisionOpenSearch}
                   values={formik.values?.opensearch}
                 ></OpenSearchSubform>

@@ -17,6 +17,7 @@
 import React from "react";
 import { Row, Col, Card, CardHeader, CardBody } from "reactstrap";
 import {
+  SaasBoostSelect,
   SaasBoostInput,
   SaasBoostCheckbox,
 } from "../components/FormComponents";
@@ -38,13 +39,26 @@ export default function OpenSearchSubform(props) {
               />
               {provisionOpenSearch && (
                 <Row>
-                  <Col xl={6}>
-                    <SaasBoostInput
+                  <Col xl={6}>                   
+                    <SaasBoostSelect
+                      type="select"
+                      name="opensearch.engineVersion"
+                      id="opensearch.engineVersion"
+                      label="Opensearch EngineVersion"
+                    >
+                      <option value="">Select One...</option>
+                      <option value="OpenSearch_1.0">OpenSearch_1.0</option>
+                      <option value="OpenSearch_1.1">OpenSearch_1.1</option>
+                      <option value="OpenSearch_1.2">OpenSearch_1.2</option>
+                    </SaasBoostSelect>
+
+                    {/* <SaasBoostInput
                       key="opensearch.engineVersion"
                       label="Please enter the opensearch enginer version"
                       name="opensearch.engineVersion"
                       type="text"
-                    />
+                    /> */}
+
                     <SaasBoostInput
                       key="opensearch.dataInstanceType"
                       label="Please enter the opensearch data instance type"
