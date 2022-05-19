@@ -1418,6 +1418,7 @@ Resources:
       - ListenerWaitCondition
       - ClusterCapacityAssociationWaitCondition
     Properties:
+      PropagateTags: TASK_DEFINITION    
       EnableExecuteCommand: !If [WindowsOS, false, true]
       ServiceName:
         Fn::Join: ['', ['tenant-', !Select [0, !Split ['-', !Ref TenantId]]]]
