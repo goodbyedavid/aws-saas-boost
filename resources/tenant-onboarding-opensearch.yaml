@@ -58,7 +58,7 @@ Parameters:
   DataInstanceType:
     Description: Instance type for data nodes.
     Type: String
-    Default: 'm5.large.search'
+    Default: 't3.medium.search'
   MasterInstanceType:
     Description: Instance type for master nodes.
     Type: String
