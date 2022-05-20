@@ -143,7 +143,12 @@ export function ApplicationComponent(props) {
     billing: appConfig.billing || {
       apiKey: '',
     },
-    opensearch: appConfig.opensearch || { engineVersion: '', dataInstanceType: '' },
+    opensearch: appConfig.opensearch || { 
+      engineVersion: '', 
+      dataInstanceType: '', 
+      congnitoUserPool: '', 
+      congnitoIdentityPool: '' 
+    },
 
     provisionDb: !!appConfig.database,
     provisionFS: !!appConfig.filesystem,

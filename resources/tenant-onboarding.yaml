@@ -310,7 +310,10 @@ Parameters:
     AllowedValues:
       - 3
       - 5
-     
+  CognitoUserPool:
+    Decription: OpenSearch use this User Pool for user authentication
+    Type: String
+
   UseRDS:
     Description: Deploy the RDS nested stack?
     Type: String
@@ -1661,6 +1664,7 @@ Resources:
         MasterInstanceType: !Ref OpenSearchMasterInstanceType
         NumberOfMasterNodes: !Ref OpenSearchNumberOfMasterNodes
         NumberOfDataNodes: !Ref OpenSearchNumberOfDataNodes
+        CognitoUserPool: !Ref CognitoUserPool
   rds:
     Type: AWS::CloudFormation::Stack
     Condition: ProvisionRDS

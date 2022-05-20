@@ -82,6 +82,9 @@ Parameters:
     Description: 'The size of the EBS volume for each data node. The minimum and maximum size of an EBS volume depends on the EBS volume type and the instance type to which it is attached.'
     Type: Number
     Default: '10'
+  CognitoUserPool:
+    Description: OpenSearch use this User Pool for user authentication
+    Type: String
 
 Resources:
   OpenSearchSecurityGroup:
@@ -125,8 +128,13 @@ Resources:
       EBSOptions: 
         EBSEnabled: !Ref EBSEnabled
         VolumeSize: !Ref EBSVolumeSize
-        VolumeType: standard
+        VolumeType: gp2
       EngineVersion: !Ref EngineVersion
+      CognitoOptions:
+          Enabled: true
+          IdentityPoolId: String
+          RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
+          UserPoolId: !Ref CognitoUserPool
       Tags: 
         - Key: Tenant
           Value: !Ref TenantId

@@ -730,10 +730,12 @@ public class OnboardingService implements RequestHandler<Map<String, Object>, AP
             Boolean enableOpenSearch = Boolean.FALSE;
             String opensearchEngineVersion = "";
             String opensearchDataInstanceType = "";
+            String cognitoUserPool = "";
             if (Utils.isNotBlank(settings.get("OPENSEARCH_ENGINE_VERSION"))){
                 enableOpenSearch = Boolean.TRUE;
                 opensearchEngineVersion = settings.get("OPENSEARCH_ENGINE_VERSION");
                 opensearchDataInstanceType = settings.get("OPENSEARCH_DATA_INSTANCE_TYPE");
+                cognitoUserPool = settings.get("CONSOLE_USER_POOL");
             }
 
 
@@ -833,6 +835,7 @@ public class OnboardingService implements RequestHandler<Map<String, Object>, AP
             templateParameters.add(Parameter.builder().parameterKey("UseOpenSearch").parameterValue(enableOpenSearch.toString()).build());
             templateParameters.add(Parameter.builder().parameterKey("OpenSearchEngineVersion").parameterValue(opensearchEngineVersion).build());
             templateParameters.add(Parameter.builder().parameterKey("OpenSearchDataInstanceType").parameterValue(opensearchDataInstanceType).build());
+            templateParameters.add(Parameter.builder().parameterKey("CognitoUserPool").parameterValue(cognitoUserPool).build());
 
             for (Parameter p : templateParameters) {
                 if (p.parameterValue() == null) {

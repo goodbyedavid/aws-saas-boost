@@ -73,6 +73,7 @@ public class SettingsService implements RequestHandler<Map<String, Object>, APIG
                     "FSX_DAILY_BACKUP_TIME", //HH:MM in UTC
                     "FSX_WEEKLY_MAINTENANCE_TIME",//d:HH:MM in UTC
                     "FSX_WINDOWS_MOUNT_DRIVE",
+                    //Added for OpenSearch
                     "OPENSEARCH_ENGINE_VERSION",
                     "OPENSEARCH_DATA_INSTANCE_TYPE")
     );
