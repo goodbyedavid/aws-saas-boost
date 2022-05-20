@@ -75,7 +75,9 @@ public class SettingsService implements RequestHandler<Map<String, Object>, APIG
                     "FSX_WINDOWS_MOUNT_DRIVE",
                     //Added for OpenSearch
                     "OPENSEARCH_ENGINE_VERSION",
-                    "OPENSEARCH_DATA_INSTANCE_TYPE")
+                    "OPENSEARCH_DATA_INSTANCE_TYPE",
+                    "OPENSEARCH_COGNITO_USER_POOL",
+                    "OPENSEARCH_COGNITO_IDENTITY_POOL")
     );
     final static List<String> TENANT_PARAMS = Collections.unmodifiableList(
             Arrays.asList("DB_HOST", "ALB")

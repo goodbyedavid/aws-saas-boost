@@ -562,6 +562,8 @@ public class SettingsServiceDAL {
             opensearch = Opensearch.builder()
                         .engineVersion(appSettings.get("OPENSEARCH_ENGINE_VERSION"))
                         .dataInstanceType(appSettings.get("OPENSEARCH_DATA_INSTANCE_TYPE"))
+                        .cognitoUserPool(appSettings.get("OPENSEARCH_COGNITO_USER_POOL"))
+                        .cognitoIdentityPool(appSettings.get("OPENSEARCH_COGNITO_IDENTITY_POOL"))
                         .build();
         }
 
@@ -818,9 +820,13 @@ public class SettingsServiceDAL {
         if (opensearch != null) {
             settings.add(Setting.builder().name("OPENSEARCH_ENGINE_VERSION").value(opensearch.getEngineVersion()).readOnly(false).build());
             settings.add(Setting.builder().name("OPENSEARCH_DATA_INSTANCE_TYPE").value(opensearch.getDataInstanceType()).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_COGNITO_USER_POOL").value(opensearch.getCognitoUserPool()).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_COGNITO_IDENTITY_POOL").value(opensearch.getCognitoIdentityPool()).readOnly(false).build());
         } else {
             settings.add(Setting.builder().name("OPENSEARCH_ENGINE_VERSION").value(null).readOnly(false).build());
             settings.add(Setting.builder().name("OPENSEARCH_DATA_INSTANCE_TYPE").value(null).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_COGNITO_USER_POOL").value(null).readOnly(false).build());
+            settings.add(Setting.builder().name("OPENSEARCH_COGNITO_IDENTITY_POOL").value(null).readOnly(false).build());
         }
 
         BillingProvider billing = appConfig.getBilling();

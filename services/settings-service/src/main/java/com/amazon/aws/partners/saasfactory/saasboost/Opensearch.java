@@ -23,10 +23,15 @@ public class Opensearch {
     
     private final String engineVersion;
     private final String dataInstanceType;
+    private final String cognitoUserPool;
+    private final String cognitoIdentityPool;
+
 
     private Opensearch(Builder builder) {
         this.engineVersion = builder.engineVersion;
         this.dataInstanceType = builder.dataInstanceType;
+        this.cognitoUserPool = builder.cognitoUserPool;
+        this.cognitoIdentityPool = builder.cognitoIdentityPool;
     }
 
     public static Builder builder() {
@@ -41,6 +46,14 @@ public class Opensearch {
         return dataInstanceType;
     }
 
+    public String getCognitoUserPool() {
+        return cognitoUserPool;
+    }
+
+    public String getCognitoIdentityPool() {
+        return cognitoIdentityPool;
+    }
+
     @JsonPOJOBuilder(withPrefix = "") // setters aren't named with[Property]
     public static final class Builder {
 
@@ -49,6 +62,8 @@ public class Opensearch {
 
         private String engineVersion;
         private String dataInstanceType;
+        private String cognitoUserPool;
+        private String cognitoIdentityPool;
 
         private Builder() {}
 
@@ -59,6 +74,16 @@ public class Opensearch {
 
         public Builder dataInstanceType(String dataInstanceType) {
             this.dataInstanceType = dataInstanceType;
+            return this;
+        }
+
+        public Builder cognitoUserPool(String cognitoUserPool) {
+            this.cognitoUserPool = cognitoUserPool;
+            return this;
+        }
+
+        public Builder cognitoIdentityPool(String cognitoIdentityPool) {
+            this.cognitoIdentityPool = cognitoIdentityPool;
             return this;
         }
 

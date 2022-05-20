@@ -70,15 +70,15 @@ export default function OpenSearchSubform(props) {
                         </CardHeader>
                         <CardBody>
                           <SaasBoostInput
-                            key="opensearch.congnitoUserPool"
-                            label="Congnito User Pool for Dashboard Access"
-                            name="opensearch.congnitoUserPool"
+                            key="opensearch.cognitoUserPool"
+                            label="Cognito User Pool for Dashboard Access"
+                            name="opensearch.cognitoUserPool"
                             type="text"
                           />
                           <SaasBoostInput
-                            key="opensearch.congnitoIdentityPool"
-                            label="Congnito Identity Pool for Dashboard Access"
-                            name="opensearch.congnitoIdentityPool"
+                            key="opensearch.cognitoIdentityPool"
+                            label="Cognito Identity Pool for Dashboard Access"
+                            name="opensearch.cognitoIdentityPool"
                             type="text"
                           />
                         </CardBody>
