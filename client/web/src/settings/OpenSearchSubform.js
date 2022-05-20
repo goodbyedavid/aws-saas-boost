@@ -64,18 +64,25 @@ export default function OpenSearchSubform(props) {
                     </SaasBoostSelect>                    
                   </Col>
                   <Col xl={6}>
-                    <SaasBoostInput
-                      key="opensearch.congnitoUserPool"
-                      label="Congnito User Pool for Dashboard Access"
-                      name="opensearch.congnitoUserPool"
-                      type="text"
-                    />
-                    <SaasBoostInput
-                      key="opensearch.congnitoIdentityPool"
-                      label="Congnito Identity Pool for Dashboard Access"
-                      name="opensearch.congnitoIdentityPool"
-                      type="text"
-                    />        
+                    <Card>
+                        <CardHeader>
+                          Access OpenSearch Dashboard in VPC (Optional)
+                        </CardHeader>
+                        <CardBody>
+                          <SaasBoostInput
+                            key="opensearch.congnitoUserPool"
+                            label="Congnito User Pool for Dashboard Access"
+                            name="opensearch.congnitoUserPool"
+                            type="text"
+                          />
+                          <SaasBoostInput
+                            key="opensearch.congnitoIdentityPool"
+                            label="Congnito Identity Pool for Dashboard Access"
+                            name="opensearch.congnitoIdentityPool"
+                            type="text"
+                          />
+                        </CardBody>
+                      </Card>        
                   </Col>
                 </Row>
               )}
