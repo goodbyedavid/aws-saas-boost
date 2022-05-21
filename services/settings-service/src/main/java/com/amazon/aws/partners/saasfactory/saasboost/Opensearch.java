@@ -57,9 +57,6 @@ public class Opensearch {
     @JsonPOJOBuilder(withPrefix = "") // setters aren't named with[Property]
     public static final class Builder {
 
-        // private String engineVersion = "OpenSearch_1.2";
-        // private String dataInstanceType = "r5.large.search";
-
         private String engineVersion;
         private String dataInstanceType;
         private String cognitoUserPool;

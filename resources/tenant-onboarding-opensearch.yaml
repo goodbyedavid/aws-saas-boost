@@ -85,6 +85,14 @@ Parameters:
   CognitoUserPool:
     Description: OpenSearch use this User Pool for user authentication
     Type: String
+  CognitoIdentityPool:
+    Description: OpenSearch use this Identity Pool for user authorization
+    Type: String
+
+Conditions:
+  AccessOpenSearchDashboard: !And
+    - !Not [!Equals [!Ref OpenSearchCognitoUserPool, '']]
+    - !Not [!Equals [!Ref OpenSearchCognitoIdentityPool, '']]
 
 Resources:
   OpenSearchSecurityGroup:
@@ -131,10 +139,15 @@ Resources:
         VolumeType: gp2
       EngineVersion: !Ref EngineVersion
       CognitoOptions:
-          Enabled: true
-          IdentityPoolId: String
-          RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
-          UserPoolId: !Ref CognitoUserPool
+        !If 
+          - AccessOpenSearchDashboard
+          - 
+            Enabled: true
+            RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
+            UserPoolId: !Ref CognitoUserPool
+            IdentityPoolId: !Ref CognitoIdentityPool
+          - !Ref "AWS::NoValue"
+        
       Tags: 
         - Key: Tenant
           Value: !Ref TenantId
