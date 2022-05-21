@@ -146,8 +146,8 @@ export function ApplicationComponent(props) {
     opensearch: appConfig.opensearch || { 
       engineVersion: '', 
       dataInstanceType: '', 
-      congnitoUserPool: '', 
-      congnitoIdentityPool: '' 
+      cognitoUserPool: '', 
+      cognitoIdentityPool: '' 
     },
 
     provisionDb: !!appConfig.database,
