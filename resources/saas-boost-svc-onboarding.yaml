@@ -580,6 +580,15 @@ Resources:
                   - es:*
                 Resource: 
                   - !Sub arn:aws:es:${AWS::Region}:${AWS::AccountId}:domain/*
+              - Effect: Allow
+                  Action:
+                    - iam:GetRole
+                    - iam:CreateRole
+                    - iam:GetRolePolicy
+                    - iam:PutRolePolicy
+                    - iam:PassRole
+                  Resource:
+                    - !Sub arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch  
   OnboardingServiceDeleteTenantExecutionRole:
     Type: AWS::IAM::Role
     Properties:

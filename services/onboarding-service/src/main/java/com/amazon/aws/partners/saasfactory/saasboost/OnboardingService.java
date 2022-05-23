@@ -734,9 +734,6 @@ public class OnboardingService implements RequestHandler<Map<String, Object>, AP
             String opensearchCognitoIdentityPool = "";
             if (Utils.isNotBlank(settings.get("OPENSEARCH_ENGINE_VERSION"))){
 
-                LOGGER.info("**OPENSEARCH_COGNITO_USER_POOL****:" + settings.get("OPENSEARCH_COGNITO_USER_POOL"));
-                LOGGER.info("**OPENSEARCH_COGNITO_IDENTITY_POOL****:" + settings.get("OPENSEARCH_COGNITO_IDENTITY_POOL"));
-
                 enableOpenSearch = Boolean.TRUE;
                 opensearchEngineVersion = settings.get("OPENSEARCH_ENGINE_VERSION");
                 opensearchDataInstanceType = settings.get("OPENSEARCH_DATA_INSTANCE_TYPE");
