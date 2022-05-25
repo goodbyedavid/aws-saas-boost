@@ -89,10 +89,10 @@ Parameters:
     Description: OpenSearch use this Identity Pool for user authorization
     Type: String
 
-# Conditions:
-#   AccessOpenSearchDashboard: !And
-#     - !Not [!Equals [!Ref CognitoUserPool, '']]
-#     - !Not [!Equals [!Ref CognitoIdentityPool, '']]
+Conditions:
+  AccessOpenSearchDashboard: !And
+    - !Not [!Equals [!Ref CognitoUserPool, '']]
+    - !Not [!Equals [!Ref CognitoIdentityPool, '']]
 
 Resources:
   OpenSearchSecurityGroup:
@@ -139,24 +139,14 @@ Resources:
         VolumeType: gp2
       EngineVersion: !Ref EngineVersion
       CognitoOptions:
-        Enabled: true
-        RoleArn: 'arn:aws:iam::847879610722:role/service-role/CognitoAccessForAmazonOpenSearch'
-        UserPoolId: 'us-east-1_r2Zq2C9f4'
-        IdentityPoolId: 'us-east-1:cb18384e-ab7e-4e81-80e4-0c887f221582'
-
-        # RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
-        # UserPoolId: !Ref CognitoUserPool
-        # IdentityPoolId: !Ref CognitoIdentityPool
-
-        # !If 
-        #   - AccessOpenSearchDashboard
-        #   - 
-        #     Enabled: true
-        #     RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
-        #     UserPoolId: !Ref CognitoUserPool
-        #     IdentityPoolId: !Ref CognitoIdentityPool
-        #   - !Ref "AWS::NoValue"
-
+        !If 
+          - AccessOpenSearchDashboard
+          - 
+            Enabled: true
+            RoleArn: !Sub "arn:aws:iam::${AWS::AccountId}:role/service-role/CognitoAccessForAmazonOpenSearch"
+            UserPoolId: !Ref CognitoUserPool
+            IdentityPoolId: !Ref CognitoIdentityPool
+          - !Ref "AWS::NoValue"
       Tags: 
         - Key: Tenant
           Value: !Ref TenantId
